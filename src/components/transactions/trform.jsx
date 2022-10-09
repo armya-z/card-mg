@@ -37,22 +37,47 @@ const FormContainer = () => {
   const [inputCardOwner, setInputCardOwner] = useState("");
 
   const handlesubmit = (event) => {
-    localStorage.setItem(
-      [inputBankName],
-      JSON.stringify(inputBankName)
-    );
-    localStorage.setItem(
-      "inputCardNumber",
-      JSON.stringify(inputCardNumber)
-    );
-    localStorage.setItem(
-      "inputCardOwner",
-      JSON.stringify(inputCardOwner)
-    );
     event.preventDefault();
+    var CardDataInput = {
+      bank_name: inputBankName,
+      bank_number: inputCardNumber,
+      bank_owner: inputCardOwner,
+    };
+    let $oldLocal = localStorage.getItem("CardDataInput");
+    var $newLocal;
+    if ($oldLocal === null) {
+      $newLocal = {
+        data: [CardDataInput],
+      };
+    } else {
+      var $oldLocalJson = JSON.parse($oldLocal);
+      var $localData = $oldLocalJson.data;
+
+      $localData.push(CardDataInput);
+      $newLocal = {
+        data: $localData,
+      };
+    }
+    localStorage.setItem(
+      "CardDataInput",
+      JSON.stringify($newLocal)
+    );
     setInputBankName("");
     setInputCardNumber("");
     setInputCardOwner("");
+    /*
+   
+  
+*/
+    /*
+    
+    let $salam = [];
+    if ($local === null) {
+      $salam[0] = CardDataInput;
+    }
+    console.log($local);
+    console.log(typeof CardDataInput);
+*/
   };
 
   return (
