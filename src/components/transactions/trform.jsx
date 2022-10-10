@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const FormComp = styled.div`
@@ -35,11 +35,13 @@ const FormContainer = () => {
   const [inputCardNumber, setInputCardNumber] =
     useState("");
   const [inputCardOwner, setInputCardOwner] = useState("");
+  const [storageInId, setStorageInId] = useState(0);
 
   let CardData = [
     inputBankName,
     inputCardNumber,
     inputCardOwner,
+    storageInId,
   ];
   const handlesubmit = (event) => {
     event.preventDefault();
@@ -48,11 +50,15 @@ const FormContainer = () => {
       JSON.stringify(CardData),
       "CardData"
     );
+    setStorageInId(() => storageInId + 1);
 
     setInputBankName("");
     setInputCardNumber("");
     setInputCardOwner("");
   };
+  useEffect(() => {
+    setStorageInId(() => storageInId + 1);
+  }, []);
 
   return (
     <>
