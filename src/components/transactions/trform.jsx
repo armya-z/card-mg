@@ -38,46 +38,14 @@ const FormContainer = () => {
 
   const handlesubmit = (event) => {
     event.preventDefault();
-    var CardDataInput = {
-      bank_name: inputBankName,
-      bank_number: inputCardNumber,
-      bank_owner: inputCardOwner,
-    };
-    let $oldLocal = localStorage.getItem("CardDataInput");
-    var $newLocal;
-    if ($oldLocal === null) {
-      $newLocal = {
-        data: [CardDataInput],
-      };
-    } else {
-      var $oldLocalJson = JSON.parse($oldLocal);
-      var $localData = $oldLocalJson.data;
 
-      $localData.push(CardDataInput);
-      $newLocal = {
-        data: $localData,
-      };
-    }
-    localStorage.setItem(
-      "CardDataInput",
-      JSON.stringify($newLocal)
-    );
+    localStorage.setItem(inputBankName, "Cardname");
+    localStorage.setItem(inputCardNumber, "Cardnumber");
+    localStorage.setItem(inputCardOwner, "Cardowner");
+
     setInputBankName("");
     setInputCardNumber("");
     setInputCardOwner("");
-    /*
-   
-  
-*/
-    /*
-    
-    let $salam = [];
-    if ($local === null) {
-      $salam[0] = CardDataInput;
-    }
-    console.log($local);
-    console.log(typeof CardDataInput);
-*/
   };
 
   return (
