@@ -36,12 +36,18 @@ const FormContainer = () => {
     useState("");
   const [inputCardOwner, setInputCardOwner] = useState("");
 
+  let CardData = [
+    inputBankName,
+    inputCardNumber,
+    inputCardOwner,
+  ];
   const handlesubmit = (event) => {
     event.preventDefault();
 
-    localStorage.setItem(inputBankName, "Cardname");
-    localStorage.setItem(inputCardNumber, "Cardnumber");
-    localStorage.setItem(inputCardOwner, "Cardowner");
+    localStorage.setItem(
+      JSON.stringify(CardData),
+      "CardData"
+    );
 
     setInputBankName("");
     setInputCardNumber("");
