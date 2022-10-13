@@ -67,7 +67,6 @@ function FormContainer() {
       localStorage.getItem("CardData")
     );
     if (initialStorage !== null) {
-      // localStorage.setItem(JSON.stringify(storage));
       setStorage(initialStorage);
     }
   }, []);
