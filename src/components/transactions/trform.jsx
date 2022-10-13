@@ -35,6 +35,10 @@ function FormContainer() {
   const [inputCardNumber, setInputCardNumber] =
     useState("");
   const [inputCardOwner, setInputCardOwner] = useState("");
+  const [inputTransaction, setInputTransaction] =
+    useState("");
+  const [inputTransactionDate, setInputTransactionDate] =
+    useState("");
   const [storage, setStorage] = useState([]);
 
   const handlesubmit = (event) => {
@@ -45,12 +49,16 @@ function FormContainer() {
         bankName: inputBankName,
         cardNumber: inputCardNumber,
         owner: inputCardOwner,
+        transaction: inputTransaction,
+        transactionDate: inputTransactionDate,
       },
     ]);
 
     setInputBankName("");
     setInputCardNumber("");
     setInputCardOwner("");
+    setInputTransaction("");
+    setInputTransactionDate("");
   };
 
   useEffect(() => {
@@ -95,6 +103,22 @@ function FormContainer() {
             setInputCardOwner(e.target.value)
           }
           placeholder="Card Owner"
+        />
+        <StyledInput
+          type="text"
+          value={inputTransaction}
+          onChange={(e) =>
+            setInputTransaction(e.target.value)
+          }
+          placeholder="transaction fee"
+        />
+        <StyledInput
+          type="text"
+          value={inputTransactionDate}
+          onChange={(e) =>
+            setInputTransactionDate(e.target.value)
+          }
+          placeholder=" date"
         />
 
         <StyledButtom onClick={handlesubmit}>
