@@ -30,34 +30,46 @@ const StyledButtom = styled.button`
   height: 2rem;
   border-radius: 5px;
 `;
-const FormContainer = () => {
+function FormContainer() {
   const [inputBankName, setInputBankName] = useState("");
   const [inputCardNumber, setInputCardNumber] =
     useState("");
   const [inputCardOwner, setInputCardOwner] = useState("");
-  const [storageInId, setStorageInId] = useState(0);
+  const [storage, setStorage] = useState([]);
 
-  let CardData = [
-    inputBankName,
-    inputCardNumber,
-    inputCardOwner,
-    storageInId,
-  ];
   const handlesubmit = (event) => {
     event.preventDefault();
-
-    localStorage.setItem(
-      JSON.stringify(CardData),
-      "CardData"
-    );
-    setStorageInId(() => storageInId + 1);
+    setStorage((prev) => [
+      ...prev,
+      {
+        bankName: inputBankName,
+        cardNumber: inputCardNumber,
+        owner: inputCardOwner,
+      },
+    ]);
 
     setInputBankName("");
     setInputCardNumber("");
     setInputCardOwner("");
   };
+
   useEffect(() => {
-    setStorageInId(() => storageInId + 1);
+    if (storage.length !== 0) {
+      localStorage.setItem(
+        "CardData",
+        JSON.stringify(storage)
+      );
+    }
+  }, [storage]);
+
+  useEffect(() => {
+    const initialStorage = JSON.parse(
+      localStorage.getItem("CardData")
+    );
+    if (initialStorage !== null) {
+      // localStorage.setItem(JSON.stringify(storage));
+      setStorage(initialStorage);
+    }
   }, []);
 
   return (
@@ -92,6 +104,6 @@ const FormContainer = () => {
       </FormComp>
     </>
   );
-};
+}
 
 export default FormContainer;
