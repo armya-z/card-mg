@@ -24,13 +24,20 @@ const Translist = styled.ul`
   font-family: "Lalezar", cursive;
   border-color: #000000;
   text-align: center;
-  display: flex;
-  flex-direction: column;
 `;
 const TransListItem = styled.li`
   display: inline-flex;
-  flex-direction: row;
+  margin: 10px;
+  flex-direction: column;
   padding: 10px 0px;
+`;
+const TrRow = styled.div`
+  border-radius: 15px;
+  background-color: #0d1f56;
+  margin: 0px;
+  padding: 10px;
+  color: white;
+  align-items: center;
 `;
 const StyledButtom = styled.button`
   border-bottom: 1px;
@@ -42,6 +49,13 @@ const StyledButtom = styled.button`
   text-align: center;
   height: 2rem;
   border-radius: 5px;
+`;
+const TrColoum = styled.h2`
+  margin: 5px;
+  flex-direction: column;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 300;
 `;
 function FormContainer() {
   const [inputBankName, setInputBankName] = useState("");
@@ -99,7 +113,7 @@ function FormContainer() {
           type="text"
           value={inputBankName}
           onChange={(e) => setInputBankName(e.target.value)}
-          placeholder="Bank Name"
+          placeholder="نام بانک"
         />
         <StyledInput
           type="text"
@@ -107,7 +121,7 @@ function FormContainer() {
           onChange={(e) =>
             setInputCardNumber(e.target.value)
           }
-          placeholder="Card Number"
+          placeholder="شماره کارت"
         />
         <StyledInput
           type="text"
@@ -115,7 +129,7 @@ function FormContainer() {
           onChange={(e) =>
             setInputCardOwner(e.target.value)
           }
-          placeholder="Card Owner"
+          placeholder="صاحب کارت"
         />
         <StyledInput
           type="text"
@@ -123,7 +137,7 @@ function FormContainer() {
           onChange={(e) =>
             setInputTransaction(e.target.value)
           }
-          placeholder="transaction fee"
+          placeholder="مبلغ"
         />
         <StyledInput
           type="text"
@@ -131,24 +145,27 @@ function FormContainer() {
           onChange={(e) =>
             setInputTransactionDate(e.target.value)
           }
-          placeholder=" date"
+          placeholder="تاریخ"
         />
 
         <StyledButtom onClick={handlesubmit}>
-          "Submit"
+          "ثبت"
         </StyledButtom>
       </FormComp>
 
-      <ul>
-        <Translist>
-          {storage.map((data) => (
-            <li key={data.bankName}>
-              {data.bankName},{data.owner},{data.cardNumber}
-              ,{data.transaction},{data.transactionDate}
-            </li>
-          ))}
-        </Translist>
-      </ul>
+      <Translist>
+        {storage.map((data) => (
+          <TransListItem key={data.bankName}>
+            <TrRow>
+              <TrColoum>{data.bankName}</TrColoum>
+              <TrColoum>{data.owner}</TrColoum>
+              <TrColoum>{data.cardNumber}</TrColoum>
+              <TrColoum>{data.transaction}</TrColoum>
+              <TrColoum>{data.transactionDate}</TrColoum>
+            </TrRow>
+          </TransListItem>
+        ))}
+      </Translist>
     </>
   );
 }
