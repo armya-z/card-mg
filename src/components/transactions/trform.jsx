@@ -19,6 +19,19 @@ const StyledInput = styled.input`
   text-align: center;
   height: 2rem;
 `;
+const Translist = styled.ul`
+  border-radius: 5px;
+  font-family: "Lalezar", cursive;
+  border-color: #000000;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+`;
+const TransListItem = styled.li`
+  display: inline-flex;
+  flex-direction: row;
+  padding: 10px 0px;
+`;
 const StyledButtom = styled.button`
   border-bottom: 1px;
   font-family: "Lalezar", cursive;
@@ -125,6 +138,17 @@ function FormContainer() {
           "Submit"
         </StyledButtom>
       </FormComp>
+
+      <ul>
+        <Translist>
+          {storage.map((data) => (
+            <li key={data.bankName}>
+              {data.bankName},{data.owner},{data.cardNumber}
+              ,{data.transaction},{data.transactionDate}
+            </li>
+          ))}
+        </Translist>
+      </ul>
     </>
   );
 }
