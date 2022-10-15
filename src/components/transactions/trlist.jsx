@@ -20,7 +20,7 @@ const StyledInput = styled.input`
   text-align: center;
   height: 2rem;
 `;
-const Translist = styled.ul`
+const Translist = styled.ol`
   border-radius: 5px;
   font-family: "Lalezar", cursive;
   border-color: #000000;
@@ -58,6 +58,11 @@ const TrColoum = styled.h2`
   font-size: 1rem;
   font-weight: 350;
 `;
+//
+//
+const instance = axios.create({
+  baseURL: "https://jsonplaceholder.ir/users",
+});
 function Trlist() {
   const [inputBankName, setInputBankName] = useState("");
   const [inputCardNumber, setInputCardNumber] =
@@ -89,53 +94,40 @@ function Trlist() {
     setInputTransactionDate("");
   };
 
-  return (
-    <>
-      <FormComp>
-        <StyledInput
-          type="text"
-          value={inputBankName}
-          onChange={(e) => setInputBankName(e.target.value)}
-          placeholder="نام بانک"
-        />
-        <StyledInput
-          type="text"
-          value={inputCardNumber}
-          onChange={(e) =>
-            setInputCardNumber(e.target.value)
-          }
-          placeholder="شماره کارت"
-        />
-        <StyledInput
-          type="text"
-          value={inputCardOwner}
-          onChange={(e) =>
-            setInputCardOwner(e.target.value)
-          }
-          placeholder="صاحب کارت"
-        />
-        <StyledInput
-          type="text"
-          value={inputTransaction}
-          onChange={(e) =>
-            setInputTransaction(e.target.value)
-          }
-          placeholder="مبلغ"
-        />
-        <StyledInput
-          type="text"
-          value={inputTransactionDate}
-          onChange={(e) =>
-            setInputTransactionDate(e.target.value)
-          }
-          placeholder="تاریخ"
-        />
+  useEffect(() => {
+    instance.get("/1").then((Response) => {
+      setInputBankName(Response.data);
+    });
+    instance.get("/1").then((Response) => {
+      setInputCardNumber(Response.data);
+    });
+    instance.get("/1").then((Response) => {
+      setInputCardOwner(Response.data);
+    });
+    instance.get("/1").then((Response) => {
+      setInputTransaction(Response.data);
+    });
+    instance.get("/1").then((Response) => {
+      setInputTransactionDate(Response.data);
+    });
+  }, []);
 
-        <StyledButtom onClick={handlesubmit}>
-          "ثبت"
-        </StyledButtom>
-      </FormComp>
-    </>
+  return (
+    <div>
+      <Translist>
+        <TransListItem>
+          <TrRow>
+            <TrColoum>{inputBankName.company}</TrColoum>
+            <TrColoum>{inputCardNumber.phone}</TrColoum>
+            <TrColoum>{inputCardOwner.name}</TrColoum>
+            <TrColoum>{inputTransaction.username}</TrColoum>
+            <TrColoum>
+              {inputTransactionDate.email}
+            </TrColoum>
+          </TrRow>
+        </TransListItem>
+      </Translist>
+    </div>
   );
 }
 
