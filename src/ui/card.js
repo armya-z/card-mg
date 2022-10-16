@@ -40,6 +40,7 @@ const Card = (props) => {
       <NameCard>{props.name}</NameCard>
       <NumCard>{props.number}</NumCard>
       <OwnCard>{props.owner}</OwnCard>
+      <NumCard>{props.remaining}</NumCard>
     </AtmCard>
   );
 };
