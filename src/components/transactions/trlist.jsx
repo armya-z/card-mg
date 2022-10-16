@@ -60,8 +60,8 @@ const TrColoum = styled.h2`
 `;
 //
 //
-const instance = axios.create({
-  baseURL: "https://jsonplaceholder.ir/users",
+const userList = axios.create({
+  baseURL: "https://jsonplaceholder.ir/",
 });
 function Trlist() {
   const [inputBankName, setInputBankName] = useState("");
@@ -72,20 +72,25 @@ function Trlist() {
     useState("");
   const [inputTransactionDate, setInputTransactionDate] =
     useState("");
+  const [cardData, setCardData] = useState([]);
   const [storage, setStorage] = useState([]);
+
+  const addCardData = () => {
+    const data = {
+      title: "foo",
+      boy: "bar",
+      userId: 1,
+    };
+
+    axios
+      .post("https://jsonplaceholder.ir/posts", data)
+      .then((Response) => {
+        console.log(Response);
+      });
+  };
 
   const handlesubmit = (event) => {
     event.preventDefault();
-    setStorage((prev) => [
-      ...prev,
-      {
-        bankName: inputBankName,
-        cardNumber: inputCardNumber,
-        owner: inputCardOwner,
-        transaction: inputTransaction,
-        transactionDate: inputTransactionDate,
-      },
-    ]);
 
     setInputBankName("");
     setInputCardNumber("");
@@ -95,37 +100,69 @@ function Trlist() {
   };
 
   useEffect(() => {
-    instance.get("/1").then((Response) => {
-      setInputBankName(Response.data);
-    });
-    instance.get("/1").then((Response) => {
-      setInputCardNumber(Response.data);
-    });
-    instance.get("/1").then((Response) => {
-      setInputCardOwner(Response.data);
-    });
-    instance.get("/1").then((Response) => {
-      setInputTransaction(Response.data);
-    });
-    instance.get("/1").then((Response) => {
-      setInputTransactionDate(Response.data);
+    userList.get("users").then((Response) => {
+      setCardData(Response.data);
     });
   }, []);
 
   return (
     <div>
+      <FormComp>
+        <StyledInput
+          type="text"
+          value={inputBankName}
+          onChange={(e) => setInputBankName(e.target.value)}
+          placeholder="نام بانک"
+        />
+        <StyledInput
+          type="text"
+          value={inputCardNumber}
+          onChange={(e) =>
+            setInputCardNumber(e.target.value)
+          }
+          placeholder="شماره کارت"
+        />
+        <StyledInput
+          type="text"
+          value={inputCardOwner}
+          onChange={(e) =>
+            setInputCardOwner(e.target.value)
+          }
+          placeholder="صاحب کارت"
+        />
+        <StyledInput
+          type="text"
+          value={inputTransaction}
+          onChange={(e) =>
+            setInputTransaction(e.target.value)
+          }
+          placeholder="مبلغ"
+        />
+        <StyledInput
+          type="text"
+          value={inputTransactionDate}
+          onChange={(e) =>
+            setInputTransactionDate(e.target.value)
+          }
+          placeholder="تاریخ"
+        />
+
+        <StyledButtom onClick={addCardData}>
+          "ثبت"
+        </StyledButtom>
+      </FormComp>
       <Translist>
-        <TransListItem>
-          <TrRow>
-            <TrColoum>{inputBankName.company}</TrColoum>
-            <TrColoum>{inputCardNumber.phone}</TrColoum>
-            <TrColoum>{inputCardOwner.name}</TrColoum>
-            <TrColoum>{inputTransaction.username}</TrColoum>
-            <TrColoum>
-              {inputTransactionDate.email}
-            </TrColoum>
-          </TrRow>
-        </TransListItem>
+        {cardData?.map((card) => (
+          <TransListItem key={card.id}>
+            <TrRow>
+              <TrColoum>{card.company}</TrColoum>
+              <TrColoum>{card.phone}</TrColoum>
+              <TrColoum>{card.name}</TrColoum>
+              <TrColoum>{card.username}</TrColoum>
+              <TrColoum>{card.email}</TrColoum>
+            </TrRow>
+          </TransListItem>
+        ))}
       </Translist>
     </div>
   );
