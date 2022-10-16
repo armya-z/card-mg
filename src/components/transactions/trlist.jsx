@@ -73,24 +73,23 @@ function Trlist() {
   const [inputTransactionDate, setInputTransactionDate] =
     useState("");
   const [cardData, setCardData] = useState([]);
-  const [storage, setStorage] = useState([]);
-
-  const addCardData = () => {
-    const data = {
-      title: "foo",
-      boy: "bar",
-      userId: 1,
-    };
-
-    axios
-      .post("https://jsonplaceholder.ir/posts", data)
-      .then((Response) => {
-        console.log(Response);
-      });
-  };
 
   const handlesubmit = (event) => {
     event.preventDefault();
+
+    const data = {
+      company: inputBankName,
+      phone: inputCardNumber,
+      name: inputCardOwner,
+      username: inputTransaction,
+      email: inputTransactionDate,
+    };
+
+    axios
+      .post("https://jsonplaceholder.ir/users", data)
+      .then((Response) => {
+        console.log(Response);
+      });
 
     setInputBankName("");
     setInputCardNumber("");
@@ -147,7 +146,7 @@ function Trlist() {
           placeholder="تاریخ"
         />
 
-        <StyledButtom onClick={addCardData}>
+        <StyledButtom onClick={handlesubmit}>
           "ثبت"
         </StyledButtom>
       </FormComp>
