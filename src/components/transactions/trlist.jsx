@@ -61,7 +61,8 @@ const TrColoum = styled.h2`
 //
 //
 const userList = axios.create({
-  baseURL: "https://jsonplaceholder.ir/",
+  baseURL:
+    "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/",
 });
 function Trlist() {
   const [inputBankName, setInputBankName] = useState("");
@@ -78,18 +79,19 @@ function Trlist() {
     event.preventDefault();
 
     const data = {
-      company: inputBankName,
-      phone: inputCardNumber,
-      name: inputCardOwner,
-      username: inputTransaction,
-      email: inputTransactionDate,
+      bankname: inputBankName,
+      cardnumber: inputCardNumber,
+      cardowner: inputCardOwner,
+      transaction: inputTransaction,
+      transactiondate: inputTransactionDate,
     };
 
     axios
-      .post("https://jsonplaceholder.ir/users", data)
-      .then((Response) => {
-        console.log(Response);
-      });
+      .post(
+        "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cards/",
+        data
+      )
+      .then((Response) => {});
 
     setInputBankName("");
     setInputCardNumber("");
@@ -99,7 +101,7 @@ function Trlist() {
   };
 
   useEffect(() => {
-    userList.get("users").then((Response) => {
+    userList.get("cards").then((Response) => {
       setCardData(Response.data);
     });
   }, []);
@@ -154,11 +156,11 @@ function Trlist() {
         {cardData?.map((card) => (
           <TransListItem key={card.id}>
             <TrRow>
-              <TrColoum>{card.company}</TrColoum>
-              <TrColoum>{card.phone}</TrColoum>
-              <TrColoum>{card.name}</TrColoum>
-              <TrColoum>{card.username}</TrColoum>
-              <TrColoum>{card.email}</TrColoum>
+              <TrColoum>{card.bankname}</TrColoum>
+              <TrColoum>{card.cardnumber}</TrColoum>
+              <TrColoum>{card.cardowner}</TrColoum>
+              <TrColoum>{card.transaction}</TrColoum>
+              <TrColoum>{card.transactiondate}</TrColoum>
             </TrRow>
           </TransListItem>
         ))}
