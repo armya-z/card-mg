@@ -74,10 +74,10 @@ function Trlist() {
   const [inputTransactionDate, setInputTransactionDate] =
     useState("");
   const [cardData, setCardData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlesubmit = (event) => {
     event.preventDefault();
-
     const data = {
       bankname: inputBankName,
       cardnumber: inputCardNumber,
@@ -85,6 +85,7 @@ function Trlist() {
       transaction: inputTransaction,
       transactiondate: inputTransactionDate,
     };
+    setIsLoading(true);
 
     axios
       .post(
@@ -99,12 +100,15 @@ function Trlist() {
     setInputTransaction("");
     setInputTransactionDate("");
   };
+  useEffect(() => {
+    setIsLoading(false);
+  }, [isLoading]);
 
   useEffect(() => {
     userList.get("cards").then((Response) => {
       setCardData(Response.data);
     });
-  }, []);
+  }, [isLoading]);
 
   return (
     <div>
