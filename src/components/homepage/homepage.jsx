@@ -1,10 +1,14 @@
 import React from "react";
 import Card from "../../ui/card";
+import addcardui from "../transactions/addcardui";
+import AddCard from "../transactions/addcardui";
 
 function HomePage() {
   return (
     <>
       <div className="App">
+        <AddCard />
+
         <Card
           name="mellat"
           number="1799 3684 2564 8642"
