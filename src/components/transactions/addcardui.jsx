@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import UserCard from "../userCard/UserCard";
 
 const Bg = styled.div`
   margin: 20px;
@@ -40,11 +41,7 @@ const StyledInput = styled.input`
 `;
 
 // (cardlist style)
-const CardDataUi = styled.h1`
-  font-size: 1.2rem;
-  font-family: "Lalezar", cursive;
-  color: white;
-`;
+
 const StyledCardList = styled.ol`
   border-radius: 5px;
   font-family: "Lalezar", cursive;
@@ -53,12 +50,11 @@ const StyledCardList = styled.ol`
 `;
 const StyledCardItem = styled.li`
   width: 400px;
-  height: 200px;
+  height: 250px;
   font-size: 1.5rem;
   align-content: center;
   display: inline-flex;
   gap: 5px;
-  background: rgb(4, 59, 85);
   font-family: "Lalezar", cursive;
   justify-content: space-around;
   align-items: center;
@@ -82,7 +78,7 @@ function AddCard() {
     useState("");
   const [cardList, setCardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [transations, setTransactions] = useState([]);
   const handlesubmit = (event) => {
     event.preventDefault();
     const data = {
@@ -109,6 +105,15 @@ function AddCard() {
     });
   }, [isLoading]);
 
+  useEffect(() => {
+    axios
+      .get(
+        "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cards"
+      )
+      .then((response) => {
+        setTransactions(response.data);
+      });
+  }, []);
   return (
     <>
       <Bg>
@@ -145,17 +150,10 @@ function AddCard() {
       <StyledCardList>
         {cardList?.map((cardinfo) => (
           <StyledCardItem key={cardinfo.id}>
-            <>
-              <CardDataUi>
-                {cardinfo.addBankNameInput}
-              </CardDataUi>
-              <CardDataUi>
-                {cardinfo.addCardNumberInput}
-              </CardDataUi>
-              <CardDataUi>
-                {cardinfo.addCardOwnerInput}
-              </CardDataUi>
-            </>
+            <UserCard
+              cardInfo={cardinfo}
+              transactions={transations}
+            />
           </StyledCardItem>
         ))}
       </StyledCardList>
