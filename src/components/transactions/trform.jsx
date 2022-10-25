@@ -3,15 +3,19 @@ import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import axios from "axios";
 
-const StyledParagraph = styled.p`
+const StyledError = styled.div`
   color: #ff0000;
-  height: 12px;
+  background-color: white;
+  border-radius: 10px;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   align-items: center;
+  align-content: center;
+  justify-content: center;
   font-family: "Lalezar", cursive;
-  font-size: 1.5rem;
+  font-size: 0.8rem;
+  gap: 20px;
+  text-align: center;
+  width: auto;
 `;
 
 const StyledDiv = styled.div`
@@ -161,13 +165,6 @@ const Formcontainer = () => {
             ))}
           </StyledSelect>
 
-          {errors.bankname &&
-            errors.bankname.type === "required" && (
-              <StyledParagraph>
-                نام بانک انتخاب نشده است
-              </StyledParagraph>
-            )}
-
           <StyledSelect
             {...register("cardnumber", { required: true })}
           >
@@ -178,13 +175,6 @@ const Formcontainer = () => {
               </option>
             ))}
           </StyledSelect>
-
-          {errors.cardnumber &&
-            errors.cardnumber.type === "required" && (
-              <StyledParagraph>
-                شماره کارت انتخاب نشده است
-              </StyledParagraph>
-            )}
 
           <StyledSelect
             {...register("cardowner", { required: true })}
@@ -197,13 +187,6 @@ const Formcontainer = () => {
             ))}
           </StyledSelect>
 
-          {errors.cardnumber &&
-            errors.cardnumber.type === "required" && (
-              <StyledParagraph>
-                نام صاحب کارت انتخاب نشده است
-              </StyledParagraph>
-            )}
-
           <StyledInput
             {...register("transaction", {
               required: true,
@@ -211,12 +194,6 @@ const Formcontainer = () => {
             placeholder="مبلغ"
             type="number"
           />
-          {errors.transaction &&
-            errors.transaction.type === "required" && (
-              <StyledParagraph>
-                مبلغ تراکنش وارد نشده است
-              </StyledParagraph>
-            )}
 
           <StyledInput
             {...register("transactiondate", {
@@ -225,18 +202,37 @@ const Formcontainer = () => {
             placeholder="تاریخ"
             type="date"
           />
-          {errors.transactiondate &&
-            errors.transactiondate.type === "required" && (
-              <StyledParagraph>
-                تاریخ انتخاب نشده است
-              </StyledParagraph>
-            )}
 
           <StyledBottun type="submit">ثبت</StyledBottun>
+          <StyledError>
+            {errors.bankname &&
+              errors.bankname.type === "required" && (
+                <p>نام بانک انتخاب نشده است</p>
+              )}
+
+            {errors.cardnumber &&
+              errors.cardnumber.type === "required" && (
+                <p>شماره کارت انتخاب نشده است</p>
+              )}
+
+            {errors.cardowner &&
+              errors.cardowner.type === "required" && (
+                <p>نام صاحب کارت انتخاب نشده است</p>
+              )}
+
+            {errors.transaction &&
+              errors.transaction.type === "required" && (
+                <p>مبلغ تراکنش وارد نشده است</p>
+              )}
+
+            {errors.transactiondate &&
+              errors.transactiondate.type ===
+                "required" && <p>تاریخ انتخاب نشده است</p>}
+          </StyledError>
         </form>
       </StyledDiv>
 
-      {/* <Translist>
+      <Translist>
         {cardData?.map((card) => (
           <TransListItem key={card.id}>
             <TrRow>
@@ -248,7 +244,7 @@ const Formcontainer = () => {
             </TrRow>
           </TransListItem>
         ))}
-      </Translist> */}
+      </Translist>
     </div>
   );
 };
