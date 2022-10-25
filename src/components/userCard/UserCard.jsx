@@ -40,7 +40,7 @@ const UserCard = ({ cardInfo, transactions }) => {
     });
 
     setSum(summary);
-  }, [sum]);
+  }, []);
 
   return (
     <StyledCardItem key={cardInfo.id}>
