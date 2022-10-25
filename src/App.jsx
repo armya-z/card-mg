@@ -7,6 +7,7 @@ import {
 import TrForm from "./components/transactions/trform";
 import HomePage from "./components/homepage/homepage";
 import Trlist from "./components/transactions/trlist";
+import Formcontainer from "./components/transactions/trform";
 
 function App() {
   return (
@@ -14,7 +15,11 @@ function App() {
       <Routes>
         <Route exact path="/" element={<HomePage />} />
         <Route exact path="/trlist" element={<Trlist />} />
-        <Route exact path="/trform" element={<TrForm />} />
+        <Route
+          exact
+          path="/trform"
+          element={<Formcontainer />}
+        />
       </Routes>
     </BrowserRouter>
   );
