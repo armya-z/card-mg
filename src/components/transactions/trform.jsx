@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
+import axios from "axios";
 
-const FormComp = styled.div`
+const StyledParagraph = styled.p`
+  color: #ff0000;
+  height: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Lalezar", cursive;
+  font-size: 1.5rem;
+`;
+
+const StyledDiv = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,9 +22,29 @@ const FormComp = styled.div`
   background-color: #0d1f56;
   height: 8rem;
   gap: 5px;
+  width: 100%;
 `;
-
+const StyledSelect = styled.select`
+  margin: 5px;
+  width: 200px;
+  border-radius: 5px;
+  font-family: "Lalezar", cursive;
+  border-color: #000000;
+  border-width: 1px;
+  text-align: center;
+  height: 2rem;
+  option {
+    color: black;
+    background: white;
+    display: flex;
+    white-space: pre;
+    min-height: 20px;
+    padding: 0px 2px 1px;
+  }
+`;
 const StyledInput = styled.input`
+  margin: 5px;
+  width: 200px;
   border-radius: 5px;
   font-family: "Lalezar", cursive;
   border-color: #000000;
@@ -19,11 +52,25 @@ const StyledInput = styled.input`
   text-align: center;
   height: 2rem;
 `;
-const Translist = styled.ul`
-  border-radius: 5px;
+const StyledBottun = styled.button`
+  border-bottom: 1px;
   font-family: "Lalezar", cursive;
-  border-color: #000000;
+  font-size: 1rem;
+  background-color: #22a657;
+  color: #ffffff;
+  border-width: 1px;
   text-align: center;
+  width: 70px;
+  height: 30px;
+  border-radius: 5px;
+`;
+
+const TrColoum = styled.h2`
+  margin: 5px;
+  flex-direction: column;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 350;
 `;
 const TransListItem = styled.li`
   display: inline-flex;
@@ -39,135 +86,171 @@ const TrRow = styled.div`
   color: white;
   align-items: center;
 `;
-const StyledButtom = styled.button`
-  border-bottom: 1px;
-  font-family: "Lalezar", cursive;
-  font-size: 0.8rem;
-  background-color: #ffffff;
-  color: black;
-  border-width: 1px;
-  text-align: center;
-  height: 2rem;
+const Translist = styled.ol`
   border-radius: 5px;
+  font-family: "Lalezar", cursive;
+  border-color: #000000;
+  text-align: center;
 `;
-const TrColoum = styled.h2`
-  margin: 5px;
-  flex-direction: column;
-  display: flex;
-  font-size: 1rem;
-  font-weight: 300;
-`;
-function FormContainer() {
-  const [inputBankName, setInputBankName] = useState("");
-  const [inputCardNumber, setInputCardNumber] =
-    useState("");
-  const [inputCardOwner, setInputCardOwner] = useState("");
-  const [inputTransaction, setInputTransaction] =
-    useState("");
-  const [inputTransactionDate, setInputTransactionDate] =
-    useState("");
-  const [storage, setStorage] = useState([]);
 
-  const handlesubmit = (event) => {
-    event.preventDefault();
-    setStorage((prev) => [
-      ...prev,
-      {
-        bankName: inputBankName,
-        cardNumber: inputCardNumber,
-        owner: inputCardOwner,
-        transaction: inputTransaction,
-        transactionDate: inputTransactionDate,
-      },
-    ]);
+const cardListUrl =
+  "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cardlist";
+const TrList =
+  "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cards";
 
-    setInputBankName("");
-    setInputCardNumber("");
-    setInputCardOwner("");
-    setInputTransaction("");
-    setInputTransactionDate("");
+const Formcontainer = () => {
+  const [cardList, setCardList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [cardData, setCardData] = useState([]);
+
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    setError,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      bankname: "",
+      cardnumber: "",
+      cardowner: "",
+      transaction: "",
+      transactiondate: "",
+    },
+  });
+
+  const onSubmit = (data) => {
+    axios.post(TrList, data).then((Response) => {});
+    setIsLoading(true);
+    resetField("bankname");
+    resetField("cardnumber");
+    resetField("cardowner");
+    resetField("transaction");
+    resetField("transactiondate");
   };
 
   useEffect(() => {
-    if (storage.length !== 0) {
-      localStorage.setItem(
-        "CardData",
-        JSON.stringify(storage)
-      );
-    }
-  }, [storage]);
+    setIsLoading(false);
+    console.log(isLoading);
+  }, [isLoading]);
 
   useEffect(() => {
-    const initialStorage = JSON.parse(
-      localStorage.getItem("CardData")
-    );
-    if (initialStorage !== null) {
-      setStorage(initialStorage);
-    }
+    axios.get(TrList).then((Response) => {
+      setCardData(Response.data);
+    });
+  }, [isLoading]);
+
+  useEffect(() => {
+    axios.get(cardListUrl).then((Response) => {
+      setCardList(Response.data);
+    });
   }, []);
 
   return (
-    <>
-      <FormComp>
-        <StyledInput
-          type="text"
-          value={inputBankName}
-          onChange={(e) => setInputBankName(e.target.value)}
-          placeholder="نام بانک"
-        />
-        <StyledInput
-          type="text"
-          value={inputCardNumber}
-          onChange={(e) =>
-            setInputCardNumber(e.target.value)
-          }
-          placeholder="شماره کارت"
-        />
-        <StyledInput
-          type="text"
-          value={inputCardOwner}
-          onChange={(e) =>
-            setInputCardOwner(e.target.value)
-          }
-          placeholder="صاحب کارت"
-        />
-        <StyledInput
-          type="text"
-          value={inputTransaction}
-          onChange={(e) =>
-            setInputTransaction(e.target.value)
-          }
-          placeholder="مبلغ"
-        />
-        <StyledInput
-          type="text"
-          value={inputTransactionDate}
-          onChange={(e) =>
-            setInputTransactionDate(e.target.value)
-          }
-          placeholder="تاریخ"
-        />
+    <div>
+      <StyledDiv>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <StyledSelect
+            {...register("bankname", { required: true })}
+          >
+            <option value="">نام بانک</option>
+            {cardList?.map((card) => (
+              <option key={card.id}>
+                {card.addBankNameInput}
+              </option>
+            ))}
+          </StyledSelect>
 
-        <StyledButtom onClick={handlesubmit}>
-          "ثبت"
-        </StyledButtom>
-      </FormComp>
+          {errors.bankname &&
+            errors.bankname.type === "required" && (
+              <StyledParagraph>
+                نام بانک انتخاب نشده است
+              </StyledParagraph>
+            )}
 
-      <Translist>
-        {storage.map((data) => (
-          <TransListItem key={data.bankName}>
+          <StyledSelect
+            {...register("cardnumber", { required: true })}
+          >
+            <option value="">شماره کارت</option>
+            {cardList?.map((card) => (
+              <option key={card.id}>
+                {card.addCardNumberInput}
+              </option>
+            ))}
+          </StyledSelect>
+
+          {errors.cardnumber &&
+            errors.cardnumber.type === "required" && (
+              <StyledParagraph>
+                شماره کارت انتخاب نشده است
+              </StyledParagraph>
+            )}
+
+          <StyledSelect
+            {...register("cardowner", { required: true })}
+          >
+            <option value="">نام صاحب حساب</option>
+            {cardList?.map((card) => (
+              <option key={card.id}>
+                {card.addCardOwnerInput}
+              </option>
+            ))}
+          </StyledSelect>
+
+          {errors.cardnumber &&
+            errors.cardnumber.type === "required" && (
+              <StyledParagraph>
+                نام صاحب کارت انتخاب نشده است
+              </StyledParagraph>
+            )}
+
+          <StyledInput
+            {...register("transaction", {
+              required: true,
+            })}
+            placeholder="مبلغ"
+            type="number"
+          />
+          {errors.transaction &&
+            errors.transaction.type === "required" && (
+              <StyledParagraph>
+                مبلغ تراکنش وارد نشده است
+              </StyledParagraph>
+            )}
+
+          <StyledInput
+            {...register("transactiondate", {
+              required: true,
+            })}
+            placeholder="تاریخ"
+            type="date"
+          />
+          {errors.transactiondate &&
+            errors.transactiondate.type === "required" && (
+              <StyledParagraph>
+                تاریخ انتخاب نشده است
+              </StyledParagraph>
+            )}
+
+          <StyledBottun type="submit">ثبت</StyledBottun>
+        </form>
+      </StyledDiv>
+
+      {/* <Translist>
+        {cardData?.map((card) => (
+          <TransListItem key={card.id}>
             <TrRow>
-              <TrColoum>{data.bankName}</TrColoum>
-              <TrColoum>{data.owner}</TrColoum>
-              <TrColoum>{data.cardNumber}</TrColoum>
-              <TrColoum>{data.transaction}</TrColoum>
-              <TrColoum>{data.transactionDate}</TrColoum>
+              <TrColoum>{card.bankname}</TrColoum>
+              <TrColoum>{card.cardnumber}</TrColoum>
+              <TrColoum>{card.cardowner}</TrColoum>
+              <TrColoum>{card.transaction}</TrColoum>
+              <TrColoum>{card.transactiondate}</TrColoum>
             </TrRow>
           </TransListItem>
         ))}
-      </Translist>
-    </>
+      </Translist> */}
+    </div>
   );
-}
+};
 
-export default FormContainer;
+export default Formcontainer;
