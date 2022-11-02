@@ -26,7 +26,6 @@ const StyledDiv = styled.div`
   background-color: #0d1f56;
   height: 8rem;
   gap: 5px;
-  width: 100%;
 `;
 const StyledSelect = styled.select`
   margin: 5px;
@@ -96,6 +95,31 @@ const Translist = styled.ol`
   border-color: #000000;
   text-align: center;
 `;
+const StyledCheckbox = styled.input.attrs({
+  type: "checkbox",
+})`
+  margin: 5px;
+  gap: 5px;
+  padding: 5px;
+  align-items: center;
+`;
+
+const StyledDivCheckBox = styled.div`
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  font-family: "Lalezar", cursive;
+  padding: 0;
+  margin: 0;
+  width: 200px;
+  justify-items: center;
+`;
+const SideBar = styled.div`
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
 
 const cardListUrl =
   "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cardlist";
@@ -106,12 +130,14 @@ const Formcontainer = () => {
   const [cardList, setCardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cardData, setCardData] = useState([]);
+  const [checked, setChecked] = useState(false);
+  const [filterValue, setFilterValue] = useState([]);
+  console.log(checked);
 
   const {
     register,
     handleSubmit,
     resetField,
-    setError,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -133,9 +159,24 @@ const Formcontainer = () => {
     resetField("transactiondate");
   };
 
+  const toggleFilter = () => setChecked((value) => !value);
+
+  const filtered = cardData.filter((owner) => {
+    return owner.cardowner === filterValue;
+  });
+
+  useEffect(() => {
+    if (checked) {
+      setCardData(filtered);
+    } else {
+      axios.get(TrList).then((Response) => {
+        setCardData(Response.data);
+      });
+    }
+  }, [checked]);
+
   useEffect(() => {
     setIsLoading(false);
-    console.log(isLoading);
   }, [isLoading]);
 
   useEffect(() => {
@@ -151,101 +192,127 @@ const Formcontainer = () => {
   }, []);
 
   return (
-    <div>
-      <StyledDiv>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <StyledSelect
-            {...register("bankname", { required: true })}
-          >
-            <option value="">نام بانک</option>
-            {cardList?.map((card) => (
-              <option key={card.id}>
-                {card.addBankNameInput}
-              </option>
-            ))}
-          </StyledSelect>
+    <>
+      <div>
+        <StyledDiv>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <StyledSelect
+              {...register("bankname", { required: true })}
+            >
+              <option value="">نام بانک</option>
+              {cardList?.map((card) => (
+                <option key={card.id}>
+                  {card.addBankNameInput}
+                </option>
+              ))}
+            </StyledSelect>
 
-          <StyledSelect
-            {...register("cardnumber", { required: true })}
-          >
-            <option value="">شماره کارت</option>
-            {cardList?.map((card) => (
-              <option key={card.id}>
-                {card.addCardNumberInput}
-              </option>
-            ))}
-          </StyledSelect>
+            <StyledSelect
+              {...register("cardnumber", {
+                required: true,
+              })}
+            >
+              <option value="">شماره کارت</option>
+              {cardList?.map((card) => (
+                <option key={card.id}>
+                  {card.addCardNumberInput}
+                </option>
+              ))}
+            </StyledSelect>
 
-          <StyledSelect
-            {...register("cardowner", { required: true })}
-          >
-            <option value="">نام صاحب حساب</option>
-            {cardList?.map((card) => (
-              <option key={card.id}>
-                {card.addCardOwnerInput}
-              </option>
-            ))}
-          </StyledSelect>
+            <StyledSelect
+              {...register("cardowner", { required: true })}
+            >
+              <option value="">نام صاحب حساب</option>
+              {cardList?.map((card) => (
+                <option key={card.id}>
+                  {card.addCardOwnerInput}
+                </option>
+              ))}
+            </StyledSelect>
 
-          <StyledInput
-            {...register("transaction", {
-              required: true,
-            })}
-            placeholder="مبلغ"
-            type="number"
-          />
+            <StyledInput
+              {...register("transaction", {
+                required: true,
+              })}
+              placeholder="مبلغ"
+              type="number"
+            />
 
-          <StyledInput
-            {...register("transactiondate", {
-              required: true,
-            })}
-            placeholder="تاریخ"
-            type="date"
-          />
+            <StyledInput
+              {...register("transactiondate", {
+                required: true,
+              })}
+              placeholder="تاریخ"
+              type="date"
+            />
 
-          <StyledBottun type="submit">ثبت</StyledBottun>
-          <StyledError>
-            {errors.bankname &&
-              errors.bankname.type === "required" && (
-                <p>نام بانک انتخاب نشده است</p>
-              )}
+            <StyledBottun type="submit">ثبت</StyledBottun>
+            <StyledError>
+              {errors.bankname &&
+                errors.bankname.type === "required" && (
+                  <p>نام بانک انتخاب نشده است</p>
+                )}
 
-            {errors.cardnumber &&
-              errors.cardnumber.type === "required" && (
-                <p>شماره کارت انتخاب نشده است</p>
-              )}
+              {errors.cardnumber &&
+                errors.cardnumber.type === "required" && (
+                  <p>شماره کارت انتخاب نشده است</p>
+                )}
 
-            {errors.cardowner &&
-              errors.cardowner.type === "required" && (
-                <p>نام صاحب کارت انتخاب نشده است</p>
-              )}
+              {errors.cardowner &&
+                errors.cardowner.type === "required" && (
+                  <p>نام صاحب کارت انتخاب نشده است</p>
+                )}
 
-            {errors.transaction &&
-              errors.transaction.type === "required" && (
-                <p>مبلغ تراکنش وارد نشده است</p>
-              )}
+              {errors.transaction &&
+                errors.transaction.type === "required" && (
+                  <p>مبلغ تراکنش وارد نشده است</p>
+                )}
 
-            {errors.transactiondate &&
-              errors.transactiondate.type ===
-                "required" && <p>تاریخ انتخاب نشده است</p>}
-          </StyledError>
-        </form>
-      </StyledDiv>
+              {errors.transactiondate &&
+                errors.transactiondate.type ===
+                  "required" && (
+                  <p>تاریخ انتخاب نشده است</p>
+                )}
+            </StyledError>
+          </form>
+        </StyledDiv>
+      </div>
+      <SideBar>
+        <Translist>
+          {cardData?.map((card) => (
+            <TransListItem key={card.id}>
+              <TrRow>
+                <TrColoum>{card.bankname}</TrColoum>
+                <TrColoum>{card.cardnumber}</TrColoum>
+                <TrColoum>{card.cardowner}</TrColoum>
+                <TrColoum>{card.transaction}</TrColoum>
+                <TrColoum>{card.transactiondate}</TrColoum>
+              </TrRow>
+            </TransListItem>
+          ))}
+        </Translist>
 
-      <Translist>
-        {cardData?.map((card) => (
-          <TransListItem key={card.id}>
-            <TrRow>
-              <TrColoum>{card.bankname}</TrColoum>
-              <TrColoum>{card.cardnumber}</TrColoum>
-              <TrColoum>{card.cardowner}</TrColoum>
-              <TrColoum>{card.transaction}</TrColoum>
-              <TrColoum>{card.transactiondate}</TrColoum>
-            </TrRow>
-          </TransListItem>
-        ))}
-      </Translist>
-    </div>
+        <StyledDivCheckBox>
+          {cardList.map((card) => (
+            <div key={card.id}>
+              <label>{card.addCardOwnerInput}</label>
+              <StyledCheckbox
+                type="checkbox"
+                name={card.addCardOwnerInput}
+                value={card.addCardOwnerInput}
+                lable={card.addCardOwnerInput}
+                placeholder={card.addCardOwnerInput}
+                onChange={(event) =>
+                  setFilterValue(event.target.value)
+                }
+                onClick={toggleFilter}
+              />
+            </div>
+          ))}
+        </StyledDivCheckBox>
+      </SideBar>
+    </>
   );
 };
 
