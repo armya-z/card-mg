@@ -1,21 +1,35 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
+import { useForm } from "react-hook-form";
 import UserCard from "../userCard/UserCard";
 
 const Bg = styled.div`
-  margin: 20px;
-  padding: 200px;
   padding-bottom: 20px;
   padding-top: 20px;
   align-items: center;
   align-self: center;
   align-content: center;
-  justify-content: space-around;
-  display: inline-flex;
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+`;
+const StyledError = styled.div`
+  color: #ff0000;
+  background-color: white;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  font-family: "Lalezar", cursive;
+  font-size: 1.1rem;
+  text-align: center;
 `;
 const StyledButton = styled.button`
-  margin: 10px;
+  margin: 5px;
+  padding: 0;
   border-radius: 5px;
   font-size: 1.2rem;
   font-family: "Lalezar", cursive;
@@ -69,34 +83,37 @@ const StyledCardItem = styled.li`
 
 const baseUrl =
   "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cardlist";
+const CardsUrl =
+  "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cards";
 function AddCard() {
-  const [addBankNameInput, setAddBankNameInput] =
-    useState("");
-  const [addCardOwnerInput, setAddCardOwnerInput] =
-    useState("");
-  const [addCardNumberInput, setAddCardNumberInput] =
-    useState("");
   const [cardList, setCardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [transations, setTransactions] = useState([]);
-  const handlesubmit = (event) => {
-    event.preventDefault();
-    const data = {
-      addBankNameInput: addBankNameInput,
-      addCardNumberInput: addCardNumberInput,
-      addCardOwnerInput: addCardOwnerInput,
-    };
-    setIsLoading(true);
 
+  const {
+    register,
+    handleSubmit,
+    resetField,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      addBankNameInput: "",
+      addCardNumberInput: "",
+      addCardOwnerInput: "",
+    },
+  });
+
+  const onSubmit = (data) => {
     axios.post(baseUrl, data).then((Response) => {});
-
-    setAddBankNameInput("");
-    setAddCardNumberInput("");
-    setAddCardOwnerInput("");
+    setIsLoading(true);
+    resetField("addBankNameInput");
+    resetField("addCardNumberInput");
+    resetField("addCardOwnerInput");
   };
 
   useEffect(() => {
     setIsLoading(false);
+    console.log(isLoading);
   }, [isLoading]);
 
   useEffect(() => {
@@ -106,57 +123,70 @@ function AddCard() {
   }, [isLoading]);
 
   useEffect(() => {
-    axios
-      .get(
-        "https://634d1dd9acb391d34a944653.mockapi.io/api/v1/cards"
-      )
-      .then((response) => {
-        setTransactions(response.data);
-      });
+    axios.get(CardsUrl).then((response) => {
+      setTransactions(response.data);
+    });
   }, []);
   return (
     <>
-      <Bg>
-        <StyledButton onClick={handlesubmit}>
-          افزودن کارت
-        </StyledButton>
-
-        <StyledInput
-          type="text"
-          placeholder="نام بانک"
-          value={addBankNameInput}
-          onChange={(e) =>
-            setAddBankNameInput(e.target.value)
-          }
-        />
-        <StyledInput
-          type="text"
-          placeholder="نام صاحب حساب"
-          value={addCardOwnerInput}
-          onChange={(e) =>
-            setAddCardOwnerInput(e.target.value)
-          }
-        />
-        <StyledInput
-          type="text"
-          placeholder="شماره کارت"
-          value={addCardNumberInput}
-          onChange={(e) =>
-            setAddCardNumberInput(e.target.value)
-          }
-        />
-      </Bg>
-
-      <StyledCardList>
-        {cardList?.map((cardinfo) => (
-          <StyledCardItem key={cardinfo.id}>
-            <UserCard
-              cardInfo={cardinfo}
-              transactions={transations}
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Bg>
+          <StyledError>
+            <StyledInput
+              {...register("addBankNameInput", {
+                required: true,
+              })}
+              type="text"
+              placeholder="نام بانک"
             />
-          </StyledCardItem>
-        ))}
-      </StyledCardList>
+            {errors.addBankNameInput &&
+              errors.addBankNameInput.type ===
+                "required" && <p>نام بانک را واردکنید</p>}
+          </StyledError>
+
+          <StyledError>
+            <StyledInput
+              {...register("addCardOwnerInput", {
+                required: true,
+              })}
+              type="text"
+              placeholder="نام صاحب حساب"
+            />
+            {errors.addCardOwnerInput &&
+              errors.addCardOwnerInput.type ===
+                "required" && <p>نام صاحب را واردکنید</p>}
+          </StyledError>
+
+          <StyledError>
+            <StyledInput
+              {...register("addCardNumberInput", {
+                required: true,
+              })}
+              type="text"
+              placeholder="شماره کارت"
+            />
+
+            {errors.addCardNumberInput &&
+              errors.addCardNumberInput.type ===
+                "required" && <p>شماره کارت را واردکنید</p>}
+          </StyledError>
+
+          <StyledButton type="submit">
+            افزودن کارت
+          </StyledButton>
+        </Bg>
+
+        <StyledCardList>
+          {cardList?.map((cardinfo) => (
+            <StyledCardItem key={cardinfo.id}>
+              <UserCard
+                cardInfo={cardinfo}
+                transactions={transations}
+              />
+            </StyledCardItem>
+          ))}
+        </StyledCardList>
+      </form>
     </>
   );
 }
