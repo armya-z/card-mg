@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -130,9 +130,8 @@ const Formcontainer = () => {
   const [cardList, setCardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [cardData, setCardData] = useState([]);
-  const [checked, setChecked] = useState(false);
   const [filterValue, setFilterValue] = useState([]);
-  console.log(checked);
+  const [filteredData, setFilteredData] = useState([]);
 
   const {
     register,
@@ -150,8 +149,15 @@ const Formcontainer = () => {
   });
 
   const onSubmit = (data) => {
-    axios.post(TrList, data).then((Response) => {});
     setIsLoading(true);
+    axios
+      .post(TrList, data)
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+      });
     resetField("bankname");
     resetField("cardnumber");
     resetField("cardowner");
@@ -159,25 +165,27 @@ const Formcontainer = () => {
     resetField("transactiondate");
   };
 
-  const toggleFilter = () => setChecked((value) => !value);
-
-  const filtered = cardData.filter((owner) => {
-    return owner.cardowner === filterValue;
-  });
+  const toggleFilter = () => {
+    const specificCheckList =
+      document.querySelectorAll(".cbox:checked");
+    let checkList = [];
+    specificCheckList.forEach((element) => {
+      checkList.push(element.value);
+    });
+    setFilterValue(checkList);
+    return checkList;
+  };
 
   useEffect(() => {
-    if (checked) {
-      setCardData(filtered);
+    if (filterValue.length === 0) {
+      setFilteredData(cardData);
     } else {
-      axios.get(TrList).then((Response) => {
-        setCardData(Response.data);
+      let filterResult = cardData.filter((x) => {
+        return filterValue.includes(x.cardowner);
       });
+      setFilteredData(filterResult);
     }
-  }, [checked]);
-
-  useEffect(() => {
-    setIsLoading(false);
-  }, [isLoading]);
+  }, [filterValue]);
 
   useEffect(() => {
     axios.get(TrList).then((Response) => {
@@ -280,34 +288,48 @@ const Formcontainer = () => {
       </div>
       <SideBar>
         <Translist>
-          {cardData?.map((card) => (
-            <TransListItem key={card.id}>
-              <TrRow>
-                <TrColoum>{card.bankname}</TrColoum>
-                <TrColoum>{card.cardnumber}</TrColoum>
-                <TrColoum>{card.cardowner}</TrColoum>
-                <TrColoum>{card.transaction}</TrColoum>
-                <TrColoum>{card.transactiondate}</TrColoum>
-              </TrRow>
-            </TransListItem>
-          ))}
+          {filterValue.length === 0 &&
+            cardData?.map((card) => (
+              <TransListItem key={card.id}>
+                <TrRow>
+                  <TrColoum>{card.bankname}</TrColoum>
+                  <TrColoum>{card.cardnumber}</TrColoum>
+                  <TrColoum>{card.cardowner}</TrColoum>
+                  <TrColoum>{card.transaction}</TrColoum>
+                  <TrColoum>
+                    {card.transactiondate}
+                  </TrColoum>
+                </TrRow>
+              </TransListItem>
+            ))}
+          {filterValue.length !== 0 &&
+            filteredData?.map((card) => (
+              <TransListItem key={card.id}>
+                <TrRow>
+                  <TrColoum>{card.bankname}</TrColoum>
+                  <TrColoum>{card.cardnumber}</TrColoum>
+                  <TrColoum>{card.cardowner}</TrColoum>
+                  <TrColoum>{card.transaction}</TrColoum>
+                  <TrColoum>
+                    {card.transactiondate}
+                  </TrColoum>
+                </TrRow>
+              </TransListItem>
+            ))}
         </Translist>
 
         <StyledDivCheckBox>
           {cardList.map((card) => (
             <div key={card.id}>
-              <label>{card.addCardOwnerInput}</label>
               <StyledCheckbox
+                className="cbox"
                 type="checkbox"
-                name={card.addCardOwnerInput}
                 value={card.addCardOwnerInput}
                 lable={card.addCardOwnerInput}
-                placeholder={card.addCardOwnerInput}
-                onChange={(event) =>
-                  setFilterValue(event.target.value)
-                }
+                // onChange={}
                 onClick={toggleFilter}
               />
+              <label>{card.addCardOwnerInput}</label>
             </div>
           ))}
         </StyledDivCheckBox>
