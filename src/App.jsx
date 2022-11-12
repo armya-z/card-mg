@@ -4,9 +4,7 @@ import {
   Route,
   BrowserRouter,
 } from "react-router-dom";
-import TrForm from "./components/transactions/trform";
 import HomePage from "./components/homepage/homepage";
-import Trlist from "./components/transactions/trlist";
 import Formcontainer from "./components/transactions/trform";
 
 function App() {
@@ -14,7 +12,6 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route exact path="/" element={<HomePage />} />
-        <Route exact path="/trlist" element={<Trlist />} />
         <Route
           exact
           path="/trform"
