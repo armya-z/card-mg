@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import axios from "axios";
+import Header from "../homepage/header";
+import Footer from "../homepage/footer";
 
 const StyledError = styled.div`
   color: #ff0000;
@@ -65,7 +67,6 @@ const StyledBottun = styled.button`
   text-align: center;
   width: 70px;
   height: 30px;
-  border-radius: 5px;
 `;
 
 const TrColoum = styled.h2`
@@ -94,6 +95,7 @@ const Translist = styled.ol`
   font-family: "Lalezar", cursive;
   border-color: #000000;
   text-align: center;
+  width: 85%;
 `;
 const StyledCheckbox = styled.input.attrs({
   type: "checkbox",
@@ -109,16 +111,20 @@ const StyledDivCheckBox = styled.div`
   display: flex;
   flex-direction: column;
   font-family: "Lalezar", cursive;
-  padding: 0;
-  margin: 0;
-  width: 200px;
+  padding: 20px;
+  margin: 10px;
+  width: 10%;
   justify-items: center;
+  align-items: flex-start;
+  border-style: groove;
+  border-width: 2px;
+  border-radius: 5px;
 `;
 const SideBar = styled.div`
   margin: 0;
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const cardListUrl =
@@ -201,6 +207,7 @@ const Formcontainer = () => {
 
   return (
     <>
+      <Header />
       <div>
         <StyledDiv>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -326,7 +333,6 @@ const Formcontainer = () => {
                 type="checkbox"
                 value={card.addCardOwnerInput}
                 lable={card.addCardOwnerInput}
-                // onChange={}
                 onClick={toggleFilter}
               />
               <label>{card.addCardOwnerInput}</label>
@@ -334,6 +340,7 @@ const Formcontainer = () => {
           ))}
         </StyledDivCheckBox>
       </SideBar>
+      <Footer />
     </>
   );
 };
