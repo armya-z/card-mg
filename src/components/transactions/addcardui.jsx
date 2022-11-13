@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import UserCard from "../userCard/UserCard";
+import Loader from "../homepage/loader";
 
 const Bg = styled.div`
   padding-bottom: 20px;
@@ -57,6 +58,7 @@ const StyledInput = styled.input`
 // (cardlist style)
 
 const StyledCardList = styled.ol`
+  min-height: 500px;
   border-radius: 5px;
   font-family: "Lalezar", cursive;
   border-color: #000000;
@@ -89,6 +91,7 @@ function AddCard() {
   const [cardList, setCardList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [transations, setTransactions] = useState([]);
+  const [isSpin, setIsSpin] = useState(false);
 
   const {
     register,
@@ -104,29 +107,47 @@ function AddCard() {
   });
 
   const onSubmit = (data) => {
-    axios.post(baseUrl, data).then((Response) => {});
     setIsLoading(true);
+    axios.post(baseUrl, data).then((Response) => {
+      setIsLoading(false);
+    });
     resetField("addBankNameInput");
     resetField("addCardNumberInput");
     resetField("addCardOwnerInput");
   };
 
   useEffect(() => {
-    setIsLoading(false);
-    console.log(isLoading);
+    setIsSpin(true);
+    axios
+      .get(baseUrl)
+      .then((Response) => {
+        setCardList(Response.data);
+        setIsSpin(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   }, [isLoading]);
 
   useEffect(() => {
-    axios.get(baseUrl).then((Response) => {
-      setCardList(Response.data);
-    });
-  }, [isLoading]);
-
-  useEffect(() => {
-    axios.get(CardsUrl).then((response) => {
-      setTransactions(response.data);
-    });
+    setIsSpin(true);
+    axios
+      .get(CardsUrl)
+      .then((response) => {
+        setTransactions(response.data);
+        setIsSpin(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsLoading(false);
+      });
   }, []);
+  const spin = () => {
+    if (isSpin) {
+      return <Loader />;
+    }
+  };
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -175,6 +196,8 @@ function AddCard() {
             افزودن کارت
           </StyledButton>
         </Bg>
+
+        <div>{spin()}</div>
 
         <StyledCardList>
           {cardList?.map((cardinfo) => (
