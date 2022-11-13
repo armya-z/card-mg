@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from "axios";
 import Header from "../homepage/header";
 import Footer from "../homepage/footer";
+import Loader from "../homepage/loader";
 
 const StyledError = styled.div`
   color: #ff0000;
@@ -116,11 +117,12 @@ const StyledDivCheckBox = styled.div`
   width: 10%;
   justify-items: center;
   align-items: flex-start;
-  border-style: groove;
+  /* border-style: groove;
   border-width: 2px;
-  border-radius: 5px;
+  border-radius: 5px; */
 `;
 const SideBar = styled.div`
+  min-height: 500px;
   margin: 0;
   display: flex;
   flex-direction: row;
@@ -138,6 +140,7 @@ const Formcontainer = () => {
   const [cardData, setCardData] = useState([]);
   const [filterValue, setFilterValue] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [isSpin, setIsSpin] = useState(false);
 
   const {
     register,
@@ -161,9 +164,11 @@ const Formcontainer = () => {
       .then(() => {
         setIsLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error(err);
         setIsLoading(false);
       });
+
     resetField("bankname");
     resetField("cardnumber");
     resetField("cardowner");
@@ -194,17 +199,37 @@ const Formcontainer = () => {
   }, [filterValue]);
 
   useEffect(() => {
-    axios.get(TrList).then((Response) => {
-      setCardData(Response.data);
-    });
+    setIsSpin(true);
+    axios
+      .get(TrList)
+      .then((Response) => {
+        setCardData(Response.data);
+        setIsSpin(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsSpin(false);
+      });
   }, [isLoading]);
 
   useEffect(() => {
-    axios.get(cardListUrl).then((Response) => {
-      setCardList(Response.data);
-    });
+    setIsSpin(true);
+    axios
+      .get(cardListUrl)
+      .then((Response) => {
+        setCardList(Response.data);
+        setIsSpin(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsSpin(false);
+      });
   }, []);
-
+  const spin = () => {
+    if (isSpin) {
+      return <Loader />;
+    }
+  };
   return (
     <>
       <Header />
@@ -293,6 +318,8 @@ const Formcontainer = () => {
           </form>
         </StyledDiv>
       </div>
+      <div>{spin()}</div>
+
       <SideBar>
         <Translist>
           {filterValue.length === 0 &&
